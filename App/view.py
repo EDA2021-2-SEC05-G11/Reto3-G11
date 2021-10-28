@@ -34,12 +34,19 @@ se hace la solicitud al controlador para ejecutar la
 operación solicitada
 """
 
+# ___________________________________________________
+#  Ruta a los archivos
+# ___________________________________________________
+
+
+sightingsfile = 'UFOS//UFOS-utf8-small.csv'
+cont = None
+
 def printMenu():
     print("Bienvenido")
-    print("1- Cargar información en el catálogo")
-    print("2- ")
+    print("1- Inicializar analizador.")
+    print("2- Cargar información de crimenes")
 
-catalog = None
 
 """
 Menu principal
@@ -49,10 +56,15 @@ while True:
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
         print("Cargando información de los archivos ....")
-
+        cont = controller.init()
     elif int(inputs[0]) == 2:
-        pass
-
+        print("\nCargando información de avistamientos ....")
+        controller.loadData(cont, sightingsfile)
+        print('Se encontraron: ' + str(lt.size(cont['Sightings']))+" avistamientos.")
+        print()
+        print("Los primero y ultimos 5 avistamientos son: ")
+        print()
+        print(controller.lista5(cont))
     else:
         sys.exit(0)
 sys.exit(0)

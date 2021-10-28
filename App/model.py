@@ -38,11 +38,23 @@ los mismos.
 """
 
 # Construccion de modelos
+def newAnalyzer():
+    analyzer = {'Sightings': None
+                }
+
+    analyzer['Sightings'] = lt.newList('ARRAY_LIST')
+    
+    return analyzer
 
 # Funciones para agregar informacion al catalogo
-
+def addsighting(analyzer, ufo):
+    lt.addLast(analyzer['Sightings'], ufo)
+    return analyzer
 # Funciones para creacion de datos
-
+def sublist(analyzer):
+    Lista_5_primeros = lt.subList(analyzer['Sightings'], 1, 5)
+    Lista_5_ultimos = lt.subList(analyzer['Sightings'], -4, 5)
+    return Lista_5_primeros, Lista_5_ultimos
 # Funciones de consulta
 
 # Funciones utilizadas para comparar elementos dentro de una lista

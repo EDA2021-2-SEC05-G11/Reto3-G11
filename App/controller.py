@@ -29,10 +29,25 @@ import csv
 El controlador se encarga de mediar entre la vista y el modelo.
 """
 
-# Inicialización del Catálogo de libros
+# Inicialización del Catálogo de UFOS
+def init():
+    analyzer = model.newAnalyzer()
+    return analyzer
+
 
 # Funciones para la carga de datos
-
+def loadData(analyzer, sightingsfile):
+    """
+    Carga los datos de los archivos CSV en el modelo
+    """
+    sightingsfile = cf.data_dir + sightingsfile
+    input_file = csv.DictReader(open(sightingsfile, encoding="utf-8"),
+                                delimiter=",")
+    for ufo in input_file:
+        model.addsighting(analyzer, ufo)
+    return analyzer
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
+def lista5(analyzer):
+    return model.sublist(analyzer)
