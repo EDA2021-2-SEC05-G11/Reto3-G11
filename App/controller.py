@@ -51,3 +51,6 @@ def loadData(analyzer, sightingsfile):
 # Funciones de consulta sobre el catálogo
 def lista5(analyzer):
     return model.sublist(analyzer)
+
+def req1(analizer, city):
+    return model.req1(analizer, city)

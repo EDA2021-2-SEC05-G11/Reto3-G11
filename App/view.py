@@ -44,8 +44,9 @@ cont = None
 
 def printMenu():
     print("Bienvenido")
-    print("1- Inicializar analizador.")
-    print("2- Cargar información de crimenes")
+    print("A- Inicializar analizador.")
+    print("B- Cargar información de crimenes")
+    print("1- Contar los avistamientos en una ciudad")
 
 
 """
@@ -54,10 +55,10 @@ Menu principal
 while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
-    if int(inputs[0]) == 1:
+    if str(inputs[0]).lower() == "a":
         print("Cargando información de los archivos ....")
         cont = controller.init()
-    elif int(inputs[0]) == 2:
+    elif str(inputs[0]).lower() == "b":
         print("\nCargando información de avistamientos ....")
         controller.loadData(cont, sightingsfile)
         print('Se encontraron: ' + str(lt.size(cont['Sightings']))+" avistamientos.")
@@ -65,6 +66,11 @@ while True:
         print("Los primero y ultimos 5 avistamientos son: ")
         print()
         print(controller.lista5(cont))
+
+    elif int(inputs[0]) == 1:
+        ciudad = str(input("Ingrese el nombre de la ciudad a consultar"))
+        controller.req1(cont, ciudad)
+    
     else:
         sys.exit(0)
 sys.exit(0)

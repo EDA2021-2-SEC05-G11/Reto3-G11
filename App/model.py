@@ -30,6 +30,8 @@ from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
+from DISClib.ADT import orderedmap as om
+import datetime
 assert cf
 
 """
@@ -55,7 +57,39 @@ def sublist(analyzer):
     Lista_5_primeros = lt.subList(analyzer['Sightings'], 1, 5)
     Lista_5_ultimos = lt.subList(analyzer['Sightings'], -4, 5)
     return Lista_5_primeros, Lista_5_ultimos
-# Funciones de consulta
+
+def req1(cont, ciudad):
+
+    cont["city"]= om.newMap(omaptype='BST', comparefunction= comparecity)
+    diccionario={}
+    for i in range(1, lt.size(cont['Sightings']) +1):
+        ufo = lt.getElement(cont['Sightings'], i)
+        city = ufo["city"]  
+
+        if city in diccionario:
+            diccionario[city].append(ufo)
+        else:
+            diccionario[city]=[ufo]
+
+    for i in diccionario.keys():
+
+        om.put(cont["city"], i, diccionario[i])
+
+    print(om.size(cont['city']))
+    final = om.get(cont["city"], ciudad)
+    return print(final["value"])
+
+def comparecity(city1, city2):
+
+    """
+    Compara dos tipos de ciudades
+    """
+    if (city1 == city2):
+        return 0
+    elif (city1 > city2):
+        return 1
+    else:
+        return -1
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 
