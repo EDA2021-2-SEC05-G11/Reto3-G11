@@ -25,6 +25,7 @@ import sys
 import controller
 from DISClib.ADT import list as lt
 assert cf
+import datetime
 
 
 """
@@ -44,9 +45,13 @@ cont = None
 
 def printMenu():
     print("Bienvenido")
-    print("A- Inicializar analizador.")
-    print("B- Cargar información de crimenes")
-    print("1- Contar los avistamientos en una ciudad")
+    print("A- Inicializar analizador. ")
+    print("B- Cargar información de avistamientos. ")
+    print("1- Contar los avistamientos en una ciudad. ")
+    print("2- Contar los avistamientos por duración. ")
+    print("3- Contar avistamientos por Hora/Minutos del día. ")
+    print("5- Contar los avistamientos de una Zona Geográfica. ")
+    
 
 
 """
@@ -70,7 +75,23 @@ while True:
     elif int(inputs[0]) == 1:
         ciudad = str(input("Ingrese el nombre de la ciudad a consultar"))
         controller.req1(cont, ciudad)
-    
+    elif int(inputs[0]) == 2:
+        duration_min = float(input("Ingrese la duracion minima: "))
+        duration_max = float(input("Ingrese la duracion maxima: "))
+        controller.req2(cont, duration_min, duration_max)
+    elif int(inputs[0]) == 3:
+        hora_min = str(input("Ingrese la fecha minima: "))
+        hora_min = (datetime.datetime.strptime(hora_min, '%H:%M')).time()
+       
+        hora_max = str(input("Ingrese la fecha maxima: "))
+        hora_max = (datetime.datetime.strptime(hora_max, '%H:%M')).time()
+        controller.req3(cont, hora_min, hora_max)
+    elif int(inputs[0]) == 5:
+        latitud_min = float(input("Digite la latitud minima: "))
+        latitud_max = float(input("Digite la latitud maxima: "))
+        longitud_min = float(input("Digite la longitud minima: "))
+        longitud_max = float(input("Digite la longitud maxima: "))
+        controller.req5(cont,latitud_min,latitud_max,longitud_min,longitud_max)
     else:
         sys.exit(0)
 sys.exit(0)
