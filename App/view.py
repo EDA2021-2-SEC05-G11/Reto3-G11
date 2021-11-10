@@ -45,8 +45,10 @@ cont = None
 def printMenu():
     print("Bienvenido")
     print("A- Inicializar analizador.")
-    print("B- Cargar información de crimenes")
-    print("1- Contar los avistamientos en una ciudad")
+    print("B- Cargar información de crimenes.")
+    print("1- Contar los avistamientos en una ciudad.")
+    print("3- Contar los avistamientos en un rango de horas.")
+    print("0- Salir")
 
 
 """
@@ -68,9 +70,15 @@ while True:
         print(controller.lista5(cont))
 
     elif int(inputs[0]) == 1:
-        ciudad = str(input("Ingrese el nombre de la ciudad a consultar"))
+        ciudad = str(input("Ingrese el nombre de la ciudad a consultar: \n"))
         controller.req1(cont, ciudad)
-    
+
+    elif int(inputs[0]) == 3:
+        lim_inicial = "2000-01-01, " + str(input("Ingrese el limite inicial de la hora: \n"))
+        lim_final = "2000-01-01, " + str(input("Ingrese el limite final de la hora: \n"))
+        controller.req3(cont, lim_inicial, lim_final)
+
     else:
         sys.exit(0)
+
 sys.exit(0)

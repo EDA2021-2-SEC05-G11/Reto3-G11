@@ -54,3 +54,6 @@ def lista5(analyzer):
 
 def req1(analizer, city):
     return model.req1(analizer, city)
+
+def req3(analizer, lim_inicial, lim_final):
+    return model.req3(analizer, lim_inicial, lim_final)
