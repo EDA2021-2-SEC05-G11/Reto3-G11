@@ -33,6 +33,7 @@ from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
 from DISClib.Algorithms.Sorting import mergesort as me
 from DISClib.ADT import orderedmap as om
+from DISClib.Algorithms.Sorting import mergesort as ms
 import datetime
 assert cf
 from prettytable import PrettyTable
@@ -62,38 +63,64 @@ def sublist(analyzer):
     Lista_5_ultimos = lt.subList(analyzer['Sightings'], -4, 5)
     return Lista_5_primeros, Lista_5_ultimos
 
+# Req 1
+
 def req1(cont, ciudad):
 
     cont["city"]= om.newMap(omaptype='BST', comparefunction= comparecity)
     diccionario={}
+    contenido ={}
     for i in range(1, lt.size(cont['Sightings']) +1):
+        contenido ={}
         ufo = lt.getElement(cont['Sightings'], i)
-        city = ufo["city"]  
+        city = ufo["city"] 
+
+        contenido["datetime"] = ufo["datetime"]
+        contenido["city"] = ufo["city"]
+        contenido["state"] = ufo["state"]
+        contenido["country"] =  ufo["country"] 
+        contenido["shape"] =  ufo["shape"] 
+        contenido["duration (seconds)"] = ufo["duration (seconds)"] 
 
         if city in diccionario:
-            diccionario[city].append(ufo)
+            lt.addLast(diccionario[city], contenido)
         else:
-            diccionario[city]=[ufo]
+            diccionario[city]=lt.newList('ARRAY_LIST')
+            lt.addLast(diccionario[city], contenido)
 
     for i in diccionario.keys():
 
-        om.put(cont["city"], i, diccionario[i])
+        orden=ms.sort(diccionario[i], comparaciondatetime)
+        om.put(cont["city"], i, orden)
 
-    print(om.size(cont['city']))
+    print("existen avistamientos en " + str(om.size(cont['city'])) + " ciudades diferentes." )
     final = om.get(cont["city"], ciudad)
-    return print(final["value"])
+    print("Existen " + str(final["value"]["size"]) + " avistamientos en la ciudad de " + ciudad)
+
+    return   print(final["value"]["elements"][:3] + final["value"]["elements"][-3:])
 
 def comparecity(city1, city2):
 
     """
-    Compara dos tipos de ciudades
+    Compara dos tipos de ciudades en formato (str)
     """
     if (city1 == city2):
         return 0
-    elif (city1 > city2):
+    elif (city1 < city2):
         return 1
     else:
         return -1
+
+def comparaciondatetime(e1,e2):
+
+    """
+    Compara dos fechas en formato (AA/DD/MM HH:MM:SS)
+    """
+
+    e1=datetime.datetime.strptime(e1["datetime"], '%Y-%m-%d %H:%M:%S')
+    e2=datetime.datetime.strptime(e2["datetime"], '%Y-%m-%d %H:%M:%S')
+
+    return e1 < e2   
 
 
 #Req2
@@ -187,6 +214,83 @@ def compareCity_(city1,city2):
         return -1
 
 #Req 3
+def req3(cont, lim_inicial, lim_final):
+
+    inicial= datetime.datetime.strptime(lim_inicial, '%Y-%m-%d, %H:%M:%S')
+    final= datetime.datetime.strptime(lim_final, '%Y-%m-%d, %H:%M:%S')
+    limite_inicial = inicial.time()
+    limite_final = final.time()
+    final = lt.newList('ARRAY_LIST')
+
+    cont["hora"]= om.newMap(omaptype='BST', comparefunction= comparehora)
+    diccionario={}
+    contenido= {}
+    for i in range(1, lt.size(cont['Sightings']) +1):
+        contenido={}
+        ufo = lt.getElement(cont['Sightings'], i)
+        fecha = datetime.datetime.strptime(ufo["datetime"], '%Y-%m-%d %H:%M:%S')
+        hora = fecha.time()
+
+        contenido["datetime"] = ufo["datetime"]
+        contenido["city"] = ufo["city"]
+        contenido["state"] = ufo["state"]
+        contenido["country"] =  ufo["country"] 
+        contenido["shape"] =  ufo["shape"] 
+        contenido["duration (seconds)"] = ufo["duration (seconds)"] 
+
+        if hora >= limite_inicial and hora <= limite_final:
+
+            lt.addLast(final, contenido)
+
+        if hora in diccionario:
+
+            lt.addLast(diccionario[hora], contenido)
+
+        else:
+            diccionario[hora]=lt.newList('ARRAY_LIST')
+            lt.addLast(diccionario[hora], contenido)
+    fin = ms.sort(final, compareh)
+    ini = lt.subList(fin, 1, 3)
+    fini = lt.subList(fin, -3, 3)
+
+    for i in diccionario.keys():
+
+        orden=ms.sort(diccionario[i], comparaciondatetime)
+        om.put(cont["hora"], i, orden)
+
+    print("Existen " + str(om.size(cont['hora'])) + " avistamientos con diferentes horas. ")
+    print("La ultima hora que se registro un avistamiento fue a las "+ str(om.maxKey(cont['hora'])))
+    print("Se encontraron " + str(lt.size(fin)) + " avistamientos dentro del rango dado")
+
+    for i in range(1, lt.size(fini)+1):
+        lt.addLast((ini), lt.getElement(fini, i))
+
+    return print(ini)
+
+def comparehora(hora1, hora2):
+
+    """
+    Compara dos tipos de hora
+    """
+    if (hora1 == hora2):
+        return 0
+    elif (hora1 > hora2):
+        return 1
+    else:
+        return -1
+
+def compareh(hora1, hora2):
+
+    """
+    Compara dos horas en formato %H:%M:%S
+    """
+
+    e1=datetime.datetime.strptime(hora1["datetime"], '%Y-%m-%d %H:%M:%S')
+    e2=datetime.datetime.strptime(hora2["datetime"], '%Y-%m-%d %H:%M:%S')
+
+    return e1.time() < e2.time()
+
+
 def compareTime(time1, time2):
     """
     Compara dos fechas
@@ -205,69 +309,7 @@ def compareTime_(ufo1, ufo2):
 
 
 
-def req3(cont, hora_min, hora_max):
-    cont["Time"]= om.newMap(omaptype='BST', comparefunction= compareTime)
-    diccionario={}
-    for i in range(1, lt.size(cont['Sightings']) +1):
-        ufo = lt.getElement(cont['Sightings'], i)
 
-        fecha = (str(ufo['datetime'])[-8:])
-                
-        ufo['datetime']= datetime.datetime.strptime(ufo['datetime'], '%Y-%m-%d %H:%M:%S')
-        fecha_ufo= datetime.datetime.strptime(fecha, '%H:%M:%S').time()
-        ufo['time'] = (str(fecha_ufo)[-8:])
-        if fecha_ufo in diccionario:
-            diccionario[fecha_ufo].append(ufo)
-        else:
-            diccionario[fecha_ufo]=[ufo]
-
-    for i in diccionario.keys():
-        om.put(cont["Time"], i, diccionario[i])
-    
-    #Liberar elementos dentro de listas y dejarlos como uno solo
-    Listas=[]
-    Lista=(om.values(cont['Time'],hora_min,hora_max))
-    
-    for i in lt.iterator(Lista):
-        if type(i)==list:
-            for j in i:
-                Listas.append(j)
-        elif type(i)!=list:
-            Listas.append(i)
-    
-    #Ordenamiento y finalización
-    Lista_sort=lt.newList(datastructure='ARRAY_LIST',cmpfunction=compareTime_)
-                          #Eliminacion de info innecesaria
-    """
-    for i in Listas:
-        [i.pop(key) for key in ['latitude', 'longitude','duration (hours/min)','date posted','comments']]
-    """
-        
-    for i in Listas:
-        i['datetime'] = str(i['datetime'])
-        lt.addLast(Lista_sort,i)
-    
-    sorted_list_1 = me.sort(Lista_sort, compareTime_)
-    list_primeros= lt.subList(sorted_list_1,1,3)
-    
-    
-    list_ultimos= lt.subList(sorted_list_1,-2,3)
-    lista_final= lt.newList(datastructure='ARRAY_LIST',cmpfunction=compareDateTime)
-    for i in lt.iterator(list_primeros):
-        lt.addLast(lista_final,i)
-    for i in lt.iterator(list_ultimos):
-        lt.addLast(lista_final,i)
-
-    print()
-    print("Hay "+str(lt.size(om.keySet(cont['Time'])))+" avistamientos de ovnis con diferentes horarios [hh:mm:ss].")
-    print()
-    print("La hora de avistamiento de ovni mas tarde es a las: "+str(om.maxKey(cont['Time'])))
-    print()
-    print("Existen "+str(len(Listas))+" avistamientos entre las horas: "+str(hora_min)+" y "+str(hora_max))
-    print()
-    print("Los primeros 3 y ultimos 3 avistamientos de ovnis en este rango de horas son: ")
-    print()
-    print(lista_final)
 #Req4
 def compareDate(ufo1,ufo2):
     return ufo1['datetime'] < ufo2['datetime']
