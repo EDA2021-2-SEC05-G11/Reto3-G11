@@ -50,6 +50,7 @@ def printMenu():
     print("1- Contar los avistamientos en una ciudad. ")
     print("2- Contar los avistamientos por duración. ")
     print("3- Contar avistamientos por Hora/Minutos del día. ")
+    print("4- Contar los avistamientos en un rango de fechas ")
     print("5- Contar los avistamientos de una Zona Geográfica. ")
     
 
@@ -86,6 +87,13 @@ while True:
         hora_max = str(input("Ingrese la fecha maxima: "))
         hora_max = (datetime.datetime.strptime(hora_max, '%H:%M')).time()
         controller.req3(cont, hora_min, hora_max)
+    elif int(inputs[0]) == 4:
+        date_min = str(input("Digite la fecha minima: "))
+        date_min = datetime.datetime.strptime(date_min, '%Y-%m-%d' )
+        date_max = str(input("Digite la fecha máxima: "))
+        date_max = datetime.datetime.strptime(date_max, '%Y-%m-%d' )
+        
+        controller.req4(cont, date_min,date_max)
     elif int(inputs[0]) == 5:
         latitud_min = float(input("Digite la latitud minima: "))
         latitud_max = float(input("Digite la latitud maxima: "))

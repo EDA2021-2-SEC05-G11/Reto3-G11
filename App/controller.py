@@ -58,6 +58,8 @@ def req2(analizer, duration_min, duration_max):
     return model.req2(analizer,  duration_min, duration_max)
 def req3(analyzer, hora_min, hora_max):
     return model.req3(analyzer, hora_min, hora_max)
+def req4(analyzer, date_min, date_max):
+    return model.req4(analyzer,date_min,date_max)
 def req5(analizer,latitud_min,latitud_max,longitud_min,longitud_max):
     return model.req5(analizer,latitud_min,latitud_max,longitud_min,longitud_max)
     

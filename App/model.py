@@ -268,7 +268,74 @@ def req3(cont, hora_min, hora_max):
     print("Los primeros 3 y ultimos 3 avistamientos de ovnis en este rango de horas son: ")
     print()
     print(lista_final)
+#Req4
+def compareDate(ufo1,ufo2):
+    return ufo1['datetime'] < ufo2['datetime']
+def req4(cont,date_min, date_max):
+    cont["Date"]= om.newMap(omaptype='BST', comparefunction= compareTime)
+    diccionario={}
+    for i in range(1, lt.size(cont['Sightings']) +1):
+        ufo = lt.getElement(cont['Sightings'], i)
+        ufo['datetime'] = datetime.datetime.strptime(ufo['datetime'], '%Y-%m-%d %H:%M:%S')
+        fecha = (str(ufo['datetime'])[:10])
+        fecha_ufo =  datetime.datetime.strptime(fecha, '%Y-%m-%d' )
+        
+        ufo['date'] = (str(fecha))
+        if fecha_ufo in diccionario:
+            diccionario[fecha_ufo].append(ufo)
+        else:
+            diccionario[fecha_ufo]=[ufo]
 
+    for i in diccionario.keys():
+        om.put(cont["Date"], i, diccionario[i])
+    
+    #Liberar elementos dentro de listas y dejarlos como uno solo
+    Listas=[]
+    Lista=(om.values(cont['Date'],date_min,date_max))
+    
+    for i in lt.iterator(Lista):
+        if type(i)==list:
+            for j in i:
+                Listas.append(j)
+        elif type(i)!=list:
+            Listas.append(i)
+    
+    #Ordenamiento y finalización
+    Lista_sort=lt.newList(datastructure='ARRAY_LIST')
+                          #Eliminacion de info innecesaria
+    """
+    for i in Listas:
+        [i.pop(key) for key in ['latitude', 'longitude','duration (hours/min)','date posted','comments']]
+    """
+    for i in Listas:
+        lt.addLast(Lista_sort,i)
+
+    sorted_list_1 = me.sort(Lista_sort, compareDate)
+    list_primeros= lt.subList(sorted_list_1,1,3)
+    list_ultimos= lt.subList(sorted_list_1,-2,3)
+    lista_final= lt.newList(datastructure='ARRAY_LIST',cmpfunction=compareDate)
+
+    for i in lt.iterator(list_primeros):
+        i['datetime'] = str(i['datetime'])
+        lt.addLast(lista_final,i)
+
+    for i in lt.iterator(list_ultimos):
+        i['datetime'] = str(i['datetime'])
+        lt.addLast(lista_final,i)
+       
+    
+    print()
+    print("Hay "+str(lt.size(om.keySet(cont['Date'])))+" avistamientos de ovnis con diferentes fechas [YYYY-MM-DD].")
+    print()
+    print("La fecha mas vieja de avistamiento de ovni fue el día: "+str(om.minKey(cont['Date']))[:10])
+    print()
+    print("Existen "+str(len(Listas))+" avistamientos entre las fechas: "+str(date_min)[:10]+" y "+str(date_max)[:10])
+    print()
+    print("Los primeros 3 y ultimos 3 avistamientos de ovnis en este rango de fechas son: ")
+    print()
+    print(lista_final)
+   
+    
 #Req5
 def req5(cont,latitud_min,latitud_max,longitud_min,longitud_max):
     #BST por latitud en general
@@ -389,7 +456,3 @@ def req5(cont,latitud_min,latitud_max,longitud_min,longitud_max):
     print("Los primeros 5 y ultimos 5 avistamientos son: ")
     print()
     print(Lista_ultimo)
-    
-# Funciones utilizadas para comparar elementos dentro de una lista
-
-# Funciones de ordenamiento
